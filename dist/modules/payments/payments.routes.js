@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const role_middleware_1 = require("../../middleware/role.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const payments_controller_1 = require("./payments.controller");
+const payments_repository_1 = require("./payments.repository");
+const payments_schemas_1 = require("./payments.schemas");
+const payments_service_1 = require("./payments.service");
+const router = (0, express_1.Router)();
+const repository = new payments_repository_1.PaymentsRepository();
+const service = new payments_service_1.PaymentsService(repository);
+const controller = new payments_controller_1.PaymentsController(service);
+router.post("/institution/payment/add", auth_middleware_1.requireAuth, (0, role_middleware_1.requireRole)("INSTITUTION"), (0, validate_middleware_1.validate)(payments_schemas_1.addParentPaymentSchema), (0, async_handler_1.asyncHandler)(controller.addParentPayment));
+router.post("/admin/institution/payment/add", auth_middleware_1.requireAuth, (0, role_middleware_1.requireRole)("ADMIN"), (0, validate_middleware_1.validate)(payments_schemas_1.addInstitutionLedgerPaymentSchema), (0, async_handler_1.asyncHandler)(controller.addInstitutionPayment));
+exports.default = router;

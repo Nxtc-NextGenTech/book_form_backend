@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const role_middleware_1 = require("../../middleware/role.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const analytics_controller_1 = require("./analytics.controller");
+const analytics_repository_1 = require("./analytics.repository");
+const analytics_service_1 = require("./analytics.service");
+const router = (0, express_1.Router)();
+const repository = new analytics_repository_1.AnalyticsRepository();
+const service = new analytics_service_1.AnalyticsService(repository);
+const controller = new analytics_controller_1.AnalyticsController(service);
+router.get("/admin/analytics", auth_middleware_1.requireAuth, (0, role_middleware_1.requireRole)("ADMIN"), (0, async_handler_1.asyncHandler)(controller.getAdminAnalytics));
+exports.default = router;

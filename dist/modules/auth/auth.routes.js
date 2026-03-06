@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const auth_schemas_1 = require("./auth.schemas");
+const auth_controller_1 = require("./auth.controller");
+const auth_repository_1 = require("./auth.repository");
+const auth_service_1 = require("./auth.service");
+const router = (0, express_1.Router)();
+const repository = new auth_repository_1.AuthRepository();
+const service = new auth_service_1.AuthService(repository);
+const controller = new auth_controller_1.AuthController(service);
+router.post("/admin/login", (0, validate_middleware_1.validate)(auth_schemas_1.adminLoginSchema), (0, async_handler_1.asyncHandler)(controller.adminLogin));
+router.post("/institution/login", (0, validate_middleware_1.validate)(auth_schemas_1.institutionLoginSchema), (0, async_handler_1.asyncHandler)(controller.institutionLogin));
+router.post("/parent/login", (0, validate_middleware_1.validate)(auth_schemas_1.parentLoginSchema), (0, async_handler_1.asyncHandler)(controller.parentLogin));
+router.get("/parent/security-question", (0, validate_middleware_1.validate)(auth_schemas_1.parentSecurityQuestionSchema), (0, async_handler_1.asyncHandler)(controller.getParentSecurityQuestion));
+exports.default = router;
